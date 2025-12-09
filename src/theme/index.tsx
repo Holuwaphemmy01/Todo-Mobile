@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { Appearance } from 'react-native'
-import { loadTheme, saveTheme } from '../utils/storage'
+import { loadTheme, saveTheme, loadAccent, saveAccent } from '../utils/storage'
 
 type ThemeName = 'light' | 'dark'
 
@@ -55,6 +55,7 @@ const dark: Theme = {
 type ThemeContextValue = {
   theme: Theme
   toggle: () => void
+  setAccent: (color: string) => void
 }
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined)
@@ -62,10 +63,12 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined)
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const system = Appearance.getColorScheme() === 'dark' ? 'dark' : 'light'
   const [name, setName] = useState<ThemeName>(system)
+  const [accent, setAccentColor] = useState<string | null>(null)
 
   useEffect(() => {
-    loadTheme().then(stored => {
+    Promise.all([loadTheme(), loadAccent()]).then(([stored, acc]) => {
       if (stored) setName(stored)
+      if (acc) setAccentColor(acc)
     })
   }, [])
 
@@ -73,12 +76,19 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     saveTheme(name)
   }, [name])
 
+  useEffect(() => {
+    if (accent) saveAccent(accent)
+  }, [accent])
+
   const value = useMemo<ThemeContextValue>(() => {
+    const base = name === 'dark' ? dark : light
+    const applied: Theme = { ...base, colors: { ...base.colors, primary: accent ?? base.colors.primary } }
     return {
-      theme: name === 'dark' ? dark : light,
+      theme: applied,
       toggle: () => setName(prev => (prev === 'dark' ? 'light' : 'dark')),
+      setAccent: (c: string) => setAccentColor(c),
     }
-  }, [name])
+  }, [name, accent])
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }
