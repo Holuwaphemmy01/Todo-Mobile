@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useReducer } from 'react'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { loadTasks, saveTasks } from '../utils/storage'
 
 export type Task = {
   id: string
@@ -52,20 +52,11 @@ type TaskContextValue = {
 const TaskContext = createContext<TaskContextValue | undefined>(undefined)
 
 async function save(tasks: Task[]) {
-  try {
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(tasks))
-  } catch {}
+  await saveTasks(tasks)
 }
 
 async function load(): Promise<Task[]> {
-  try {
-    const json = await AsyncStorage.getItem(STORAGE_KEY)
-    if (!json) return []
-    const data: Task[] = JSON.parse(json)
-    return Array.isArray(data) ? data : []
-  } catch {
-    return []
-  }
+  return loadTasks()
 }
 
 export function TaskProvider({ children }: { children: React.ReactNode }) {
