@@ -47,6 +47,7 @@ type TaskContextValue = {
   addTask: (title: string, description?: string, dueDate?: number) => Promise<void>
   toggleTask: (id: string) => Promise<void>
   deleteTask: (id: string) => Promise<void>
+  restoreTask: (task: Task) => Promise<void>
 }
 
 const TaskContext = createContext<TaskContextValue | undefined>(undefined)
@@ -84,6 +85,9 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
       },
       deleteTask: async id => {
         dispatch({ type: 'delete', id })
+      },
+      restoreTask: async task => {
+        dispatch({ type: 'add', task })
       },
     }
   }, [state.tasks, state.loading])
