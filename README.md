@@ -105,6 +105,69 @@ A simple, polished to‑do app built with React Native and Expo. It supports add
 - `src/theme/index.tsx` — theme provider, accent persistence
 - `__tests__/*.test.ts` — unit tests for split and storage
 
+## File Structure
+
+```
+.
+├─ App.tsx
+├─ index.ts
+├─ package.json
+├─ tsconfig.json
+├─ jest.config.js
+├─ jest.setup.js
+├─ README.md
+├─ app.json
+├─ assets/
+│  ├─ adaptive-icon.png
+│  ├─ favicon.png
+│  ├─ icon.png
+│  └─ splash-icon.png
+├─ __tests__/
+│  ├─ split.test.ts
+│  └─ storage.test.ts
+├─ src/
+│  ├─ navigation/
+│  │  └─ index.tsx
+│  ├─ screens/
+│  │  ├─ TaskListScreen.tsx
+│  │  └─ AddTaskScreen.tsx
+│  ├─ components/
+│  │  ├─ TaskItem.tsx
+│  │  └─ Snack.tsx
+│  ├─ store/
+│  │  └─ tasks.tsx
+│  ├─ theme/
+│  │  └─ index.tsx
+│  └─ utils/
+│     ├─ voice.ts
+│     ├─ split.ts
+│     └─ storage.ts
+```
+
+## Getting Started After Clone
+
+- Install dependencies:
+  - `npm install`
+- Configure environment variable for voice:
+  - Windows PowerShell: `$env:EXPO_PUBLIC_OPENAI_API_KEY = "<your-key>"`
+  - macOS/Linux: `export EXPO_PUBLIC_OPENAI_API_KEY="<your-key>"`
+- Run on web:
+  - `npm run web` and open `http://localhost:8081/`
+- Run on Android:
+  - Install Android Studio and SDK; start an emulator or connect a device
+  - Ensure `adb` works: `adb version`
+  - `npm run android`
+- Run on iOS (macOS):
+  - Install Xcode and simulator tools
+  - `npm run ios`
+- Verify quality:
+  - Tests: `npm test`
+  - Typecheck: `npx tsc -p tsconfig.json --noEmit`
+- Troubleshooting:
+  - Gesture errors → root is already wrapped with `GestureHandlerRootView`
+  - `adb` not found → set `ANDROID_HOME` and add `platform-tools` to `PATH`
+  - Voice errors → verify `EXPO_PUBLIC_OPENAI_API_KEY` and connectivity
+
 ## Design Decisions
 
 - Context store over Redux for simplicity and small scope
