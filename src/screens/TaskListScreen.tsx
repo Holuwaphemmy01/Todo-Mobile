@@ -31,16 +31,16 @@ export default function TaskListScreen() {
   const onAddVoice = async () => {
     if (listening) return
     setListening(true)
-    const res = await recordAndTranscribe(6)
+    const transcription = await recordAndTranscribe(6)
     setListening(false)
-    if (!res.text) {
-      if (res.error === 'key') Alert.alert('Missing API key')
+    if (!transcription.text) {
+      if (transcription.error === 'key') Alert.alert('Missing API key')
       return
     }
-    const items = extractTasks(res.text)
-    for (const t of items) await addTask(t)
+    const parsedTasks = extractTasks(transcription.text)
+    for (const taskTitle of parsedTasks) await addTask(taskTitle)
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-    if (Platform.OS === 'android') ToastAndroid.show(`Added ${items.length} task(s)`, ToastAndroid.SHORT)
+    if (Platform.OS === 'android') ToastAndroid.show(`Added ${parsedTasks.length} task(s)`, ToastAndroid.SHORT)
   }
 
   const summary = useMemo(() => {
@@ -118,10 +118,10 @@ export default function TaskListScreen() {
               />
               <Pressable
                 onPress={async () => {
-                  const t = quick.trim()
-                  if (!t) return
+                  const title = quick.trim()
+                  if (!title) return
                   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-                  await addTask(t)
+                  await addTask(title)
                   setQuick('')
                   Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
                   if (Platform.OS === 'android') ToastAndroid.show('Task added', ToastAndroid.SHORT)
