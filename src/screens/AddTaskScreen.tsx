@@ -27,6 +27,10 @@ export default function AddTaskScreen() {
       return
     }
     const d = Platform.OS === 'web' ? parseDate(dueText) : dueDate?.getTime() ?? null
+    if (d && d < startOfToday().getTime()) {
+      Alert.alert('Due date cannot be in the past')
+      return
+    }
     await addTask(t, description, d ?? undefined)
     nav.goBack()
   }
@@ -54,9 +58,13 @@ export default function AddTaskScreen() {
                 value={dueDate ?? new Date()}
                 mode="date"
                 display="default"
+                minimumDate={startOfToday()}
                 onChange={(_, date) => {
                   setShowPicker(false)
-                  if (date) setDueDate(date)
+                  if (date) {
+                    const min = startOfToday()
+                    setDueDate(date.getTime() < min.getTime() ? min : date)
+                  }
                 }}
               />
             ) : null}
@@ -74,5 +82,14 @@ function parseDate(s: string): number | null {
   const t = s.trim()
   if (!t) return null
   const m = /^\d{4}-\d{2}-\d{2}$/.test(t) ? new Date(t + 'T00:00:00') : null
-  return m && !isNaN(m.getTime()) ? m.getTime() : null
+  const ts = m && !isNaN(m.getTime()) ? m.getTime() : NaN
+  if (isNaN(ts)) return null
+  const min = startOfToday().getTime()
+  return ts < min ? null : ts
+}
+
+function startOfToday() {
+  const d = new Date()
+  d.setHours(0, 0, 0, 0)
+  return d
 }
