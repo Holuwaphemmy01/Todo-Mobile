@@ -185,19 +185,9 @@ A simple, polished to‑do app built with React Native and Expo. It supports add
 - Web voice: voice FAB requires the API key and recording; web uses `webm` where available
 - Port conflicts: Expo prompts to switch ports; accept when asked
 
-## Roadmap (Optional Enhancements)
-
-- Snackbar undo for complete action
-- Language selection for voice input
-- Date picker quick chips (Today/Tomorrow/Next Week)
-- More unit tests for reducer logic and UI components
-- Migrate recording to `expo-audio` to address deprecation notice
 
 ## Security
 
 - Do not commit API keys; keep them in environment variables
 - Avoid logging sensitive data
 
-## License
-
-MIT
