@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
-import { Alert, Pressable, SafeAreaView, SectionList, Text, TextInput, View, LayoutAnimation, Platform, UIManager, ToastAndroid } from 'react-native'
+import { Alert, Pressable, SectionList, Text, TextInput, View, LayoutAnimation, Platform, UIManager, ToastAndroid } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useTasks } from '../store/tasks'
