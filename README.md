@@ -11,7 +11,7 @@ A simple, polished to‑do app built with React Native and Expo. It supports add
 - Voice input: Floating Action Button listens and adds tasks using OpenAI Whisper
 - Smart parsing: split natural phrases into multiple tasks ("Buy milk and call mom")
 - Date handling: due dates with sorting; native date picker disallows past dates
-- Theme: light/dark toggle and accent color presets, persisted
+- Theme: light/dark toggle and accent color presets
 - UI polish: sticky section headers, haptics, animations, swipe to complete/delete, undo snackbar
 - Tests: unit tests for storage helpers and task splitting
 
@@ -88,7 +88,7 @@ A simple, polished to‑do app built with React Native and Expo. It supports add
 
 - Tasks are saved under key `@todo/tasks`
 - Theme (light/dark) under `@todo/theme`
-- Accent color under `@todo/accent`
+- Accent color: currently not persisted
 
 ## Architecture Overview
 
@@ -102,7 +102,7 @@ A simple, polished to‑do app built with React Native and Expo. It supports add
 - `src/utils/voice.ts` — record and transcribe with Whisper API
 - `src/utils/split.ts` — split natural phrases into tasks
 - `src/utils/storage.ts` — helper functions for `AsyncStorage`
-- `src/theme/index.tsx` — theme provider, accent persistence
+- `src/theme/index.tsx` — theme provider, accent customization
 - `__tests__/*.test.ts` — unit tests for split and storage
 
 ## File Structure
