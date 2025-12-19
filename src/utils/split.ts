@@ -3,23 +3,23 @@ export function extractTasks(input: string): string[] {
   if (!normalized) return []
   const joints = [',', ';', ' and ', ' then ', ' also ', ' next ']
   let segments: string[] = [normalized]
-  for (const j of joints) {
-    segments = segments.flatMap(s => s.split(j))
+  for (const delimiter of joints) {
+    segments = segments.flatMap(segment => segment.split(delimiter))
   }
   const cleaned = segments
-    .map(s => s.replace(/^[\s\-\•]+/, '').trim())
+    .map(segment => segment.replace(/^[\s\-\•]+/, '').trim())
     .filter(Boolean)
   const unique: string[] = []
-  for (const s of cleaned) {
-    if (!unique.some(u => similarity(u, s) > 0.9)) unique.push(s)
+  for (const cleanedSegment of cleaned) {
+    if (!unique.some(existingItem => similarity(existingItem, cleanedSegment) > 0.9)) unique.push(cleanedSegment)
   }
-  return unique.map(s => s[0].toUpperCase() + s.slice(1))
+  return unique.map(taskText => taskText[0].toUpperCase() + taskText.slice(1))
 }
 
-function similarity(a: string, b: string) {
-  const setA = new Set(a.split(' '))
-  const setB = new Set(b.split(' '))
-  const inter = [...setA].filter(x => setB.has(x)).length
+function similarity(first: string, second: string) {
+  const setA = new Set(first.split(' '))
+  const setB = new Set(second.split(' '))
+  const inter = [...setA].filter(word => setB.has(word)).length
   const union = new Set([...setA, ...setB]).size
   return inter / union
 }

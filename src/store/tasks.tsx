@@ -32,10 +32,10 @@ function reducer(state: State, action: Actions): State {
     case 'toggle':
       return {
         ...state,
-        tasks: state.tasks.map(t => (t.id === action.id ? { ...t, completed: !t.completed } : t)),
+        tasks: state.tasks.map(task => (task.id === action.id ? { ...task, completed: !task.completed } : task)),
       }
     case 'delete':
-      return { ...state, tasks: state.tasks.filter(t => t.id !== action.id) }
+      return { ...state, tasks: state.tasks.filter(task => task.id !== action.id) }
     default:
       return state
   }

@@ -1,12 +1,12 @@
 jest.mock('@react-native-async-storage/async-storage', () => {
   let store = {}
   return {
-    setItem: async (k, v) => {
-      store[k] = v
+    setItem: async (key, value) => {
+      store[key] = value
     },
-    getItem: async k => store[k] ?? null,
-    removeItem: async k => {
-      delete store[k]
+    getItem: async key => store[key] ?? null,
+    removeItem: async key => {
+      delete store[key]
     },
     clear: async () => {
       store = {}

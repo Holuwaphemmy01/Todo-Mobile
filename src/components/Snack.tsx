@@ -15,8 +15,8 @@ export default function Snack({ visible, message, actionText, onAction, onClose,
   const { theme } = useTheme()
   useEffect(() => {
     if (!visible) return
-    const t = setTimeout(() => onClose?.(), duration)
-    return () => clearTimeout(t)
+    const timeoutId = setTimeout(() => onClose?.(), duration)
+    return () => clearTimeout(timeoutId)
   }, [visible, duration, onClose])
   if (!visible) return null
   return (

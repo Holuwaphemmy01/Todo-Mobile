@@ -45,19 +45,19 @@ export default function TaskListScreen() {
 
   const summary = useMemo(() => {
     const total = tasks.length
-    const completedCount = tasks.filter(t => t.completed).length
-    const overdueCount = tasks.filter(t => !t.completed && typeof t.dueDate === 'number' && t.dueDate! < Date.now()).length
+    const completedCount = tasks.filter(task => task.completed).length
+    const overdueCount = tasks.filter(task => !task.completed && typeof task.dueDate === 'number' && task.dueDate! < Date.now()).length
     return { total, completedCount, overdueCount }
   }, [tasks])
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    const match = (t: { title: string; description?: string }) =>
-      !q || t.title.toLowerCase().includes(q) || (t.description?.toLowerCase() || '').includes(q)
-    const base = tasks.filter(t => match(t)).filter(t => (filter === 'all' ? true : filter === 'active' ? !t.completed : t.completed))
-    const upcoming = base.filter(t => !t.completed && typeof t.dueDate === 'number').sort((a, b) => (a.dueDate! - b.dueDate!))
-    const noDue = base.filter(t => !t.completed && !t.dueDate).sort((a, b) => b.createdAt - a.createdAt)
-    const completed = base.filter(t => t.completed).sort((a, b) => (a.dueDate && b.dueDate ? a.dueDate - b.dueDate : b.createdAt - a.createdAt))
+    const normalizedQuery = query.trim().toLowerCase()
+    const match = (item: { title: string; description?: string }) =>
+      !normalizedQuery || item.title.toLowerCase().includes(normalizedQuery) || (item.description?.toLowerCase() || '').includes(normalizedQuery)
+    const base = tasks.filter(task => match(task)).filter(task => (filter === 'all' ? true : filter === 'active' ? !task.completed : task.completed))
+    const upcoming = base.filter(task => !task.completed && typeof task.dueDate === 'number').sort((leftTask, rightTask) => (leftTask.dueDate! - rightTask.dueDate!))
+    const noDue = base.filter(task => !task.completed && !task.dueDate).sort((leftTask, rightTask) => rightTask.createdAt - leftTask.createdAt)
+    const completed = base.filter(task => task.completed).sort((leftTask, rightTask) => (leftTask.dueDate && rightTask.dueDate ? leftTask.dueDate - rightTask.dueDate : rightTask.createdAt - leftTask.createdAt))
     const sections: Array<{ title: string; data: typeof tasks }> = []
     if (upcoming.length) sections.push({ title: 'Upcoming', data: upcoming })
     if (noDue.length) sections.push({ title: 'No Due Date', data: noDue })
@@ -97,15 +97,15 @@ export default function TaskListScreen() {
               <Text style={{ color: theme.colors.text }}>{summary.total} tasks • {summary.completedCount} completed • {summary.overdueCount} overdue</Text>
             </View>
             <View style={{ flexDirection: 'row', marginTop: 8, paddingHorizontal: 12 }}>
-              {(['all', 'active', 'completed'] as const).map(f => (
-                <Pressable key={f} onPress={() => setFilter(f)} style={{ marginRight: 8, backgroundColor: filter === f ? theme.colors.primary : theme.colors.card, borderWidth: 1, borderColor: theme.colors.divider, borderRadius: 16, paddingHorizontal: 12, paddingVertical: 6 }}>
-                  <Text style={{ color: filter === f ? 'white' : theme.colors.text }}>{f[0].toUpperCase() + f.slice(1)}</Text>
+              {(['all', 'active', 'completed'] as const).map(filterValue => (
+                <Pressable key={filterValue} onPress={() => setFilter(filterValue)} style={{ marginRight: 8, backgroundColor: filter === filterValue ? theme.colors.primary : theme.colors.card, borderWidth: 1, borderColor: theme.colors.divider, borderRadius: 16, paddingHorizontal: 12, paddingVertical: 6 }}>
+                  <Text style={{ color: filter === filterValue ? 'white' : theme.colors.text }}>{filterValue[0].toUpperCase() + filterValue.slice(1)}</Text>
                 </Pressable>
               ))}
             </View>
             <View style={{ flexDirection: 'row', paddingHorizontal: 12, marginTop: 8 }}>
-              {['#2196f3', '#4caf50', '#ff5722', '#9c27b0', '#607d8b'].map(c => (
-                <Pressable key={c} onPress={() => setAccent(c)} style={{ width: 24, height: 24, borderRadius: 12, marginRight: 8, backgroundColor: c, borderWidth: 2, borderColor: theme.colors.card }} />
+              {['#2196f3', '#4caf50', '#ff5722', '#9c27b0', '#607d8b'].map(colorHex => (
+                <Pressable key={colorHex} onPress={() => setAccent(colorHex)} style={{ width: 24, height: 24, borderRadius: 12, marginRight: 8, backgroundColor: colorHex, borderWidth: 2, borderColor: theme.colors.card }} />
               ))}
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, marginTop: 8 }}>

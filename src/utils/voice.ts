@@ -37,7 +37,7 @@ export async function recordAndTranscribe(maxSeconds = 10): Promise<Transcriptio
   await recording.prepareToRecordAsync(options)
   await recording.startAsync()
 
-  await new Promise(r => setTimeout(r, maxSeconds * 1000))
+  await new Promise(resolve => setTimeout(resolve, maxSeconds * 1000))
   try {
     await recording.stopAndUnloadAsync()
   } catch {}

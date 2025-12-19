@@ -1,15 +1,33 @@
 import { extractTasks } from '../src/utils/split'
 
-describe('extractTasks', () => {
-  test('splits by commas and and/then', () => {
-    const input = 'Buy milk, call mom and finish report then sleep'
-    const tasks = extractTasks(input)
-    expect(tasks).toEqual(expect.arrayContaining(['Buy milk', 'Call mom', 'Finish report', 'Sleep']))
+describe('split', () => {
+  test('splits by connectors and punctuation', () => {
+    const input = 'Buy milk and call mom; walk dog, then read book also next pay bills'
+    const out = extractTasks(input)
+    expect(out).toEqual(expect.arrayContaining(['Buy milk', 'Call mom', 'Walk dog', 'Read book']))
+    expect(out.some(taskTitle => taskTitle.toLowerCase().includes('bills'))).toBe(true)
+    expect(out.length).toBe(5)
   })
 
-  test('dedupes near-duplicates', () => {
+  test('removes bullets and trims', () => {
+    const input = '- buy milk, • call Mom'
+    const out = extractTasks(input)
+    expect(out).toEqual(['Buy milk', 'Call mom'])
+  })
+
+  test('deduplicates identical tasks', () => {
     const input = 'Buy milk and buy milk'
-    const tasks = extractTasks(input)
-    expect(tasks.filter(t => t.toLowerCase().includes('buy milk')).length).toBe(1)
+    const out = extractTasks(input)
+    expect(out).toEqual(['Buy milk'])
+  })
+
+  test('capitalizes first letter', () => {
+    const input = 'call mom'
+    const out = extractTasks(input)
+    expect(out).toEqual(['Call mom'])
+  })
+
+  test('returns empty array for empty input', () => {
+    expect(extractTasks('   ')).toEqual([])
   })
 })

@@ -1,4 +1,5 @@
 import { loadTasks, saveTasks, loadTheme, saveTheme } from '../src/utils/storage'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const sample = [
   { id: '1', title: 'A', completed: false, createdAt: Date.now() },
@@ -15,7 +16,19 @@ describe('storage', () => {
 
   test('save and load theme', async () => {
     await saveTheme('dark')
-    const v = await loadTheme()
-    expect(v).toBe('dark')
+    const value = await loadTheme()
+    expect(value).toBe('dark')
+  })
+
+  test('loadTasks handles invalid JSON', async () => {
+    await AsyncStorage.setItem('@todo/tasks', 'not-json')
+    const out = await loadTasks()
+    expect(out).toEqual([])
+  })
+
+  test('loadTheme returns null for invalid value', async () => {
+    await AsyncStorage.setItem('@todo/theme', 'blue')
+    const value = await loadTheme()
+    expect(value).toBeNull()
   })
 })

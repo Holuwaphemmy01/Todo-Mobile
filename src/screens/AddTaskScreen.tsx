@@ -21,17 +21,17 @@ export default function AddTaskScreen() {
   const [showPicker, setShowPicker] = useState(false)
 
   const onSave = async () => {
-    const t = title.trim()
-    if (!t) {
+    const trimmedTitle = title.trim()
+    if (!trimmedTitle) {
       Alert.alert('Title required')
       return
     }
-    const d = Platform.OS === 'web' ? parseDate(dueText) : dueDate?.getTime() ?? null
-    if (d && d < startOfToday().getTime()) {
+    const dueTimestamp = Platform.OS === 'web' ? parseDate(dueText) : dueDate?.getTime() ?? null
+    if (dueTimestamp && dueTimestamp < startOfToday().getTime()) {
       Alert.alert('Due date cannot be in the past')
       return
     }
-    await addTask(t, description, d ?? undefined)
+    await addTask(trimmedTitle, description, dueTimestamp ?? undefined)
     nav.goBack()
   }
 
@@ -59,7 +59,7 @@ export default function AddTaskScreen() {
                 mode="date"
                 display="default"
                 minimumDate={startOfToday()}
-                onChange={(_, date) => {
+                onChange={(_event, date) => {
                   setShowPicker(false)
                   if (date) {
                     const min = startOfToday()
@@ -78,18 +78,18 @@ export default function AddTaskScreen() {
   )
 }
 
-function parseDate(s: string): number | null {
-  const t = s.trim()
-  if (!t) return null
-  const m = /^\d{4}-\d{2}-\d{2}$/.test(t) ? new Date(t + 'T00:00:00') : null
-  const ts = m && !isNaN(m.getTime()) ? m.getTime() : NaN
-  if (isNaN(ts)) return null
+function parseDate(dateText: string): number | null {
+  const trimmedText = dateText.trim()
+  if (!trimmedText) return null
+  const matchDate = /^\d{4}-\d{2}-\d{2}$/.test(trimmedText) ? new Date(trimmedText + 'T00:00:00') : null
+  const timestamp = matchDate && !isNaN(matchDate.getTime()) ? matchDate.getTime() : NaN
+  if (isNaN(timestamp)) return null
   const min = startOfToday().getTime()
-  return ts < min ? null : ts
+  return timestamp < min ? null : timestamp
 }
 
 function startOfToday() {
-  const d = new Date()
-  d.setHours(0, 0, 0, 0)
-  return d
+  const date = new Date()
+  date.setHours(0, 0, 0, 0)
+  return date
 }
